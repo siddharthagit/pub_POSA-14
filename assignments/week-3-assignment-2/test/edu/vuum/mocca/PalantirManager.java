@@ -45,6 +45,8 @@ public class PalantirManager {
          * Use the "fair" policy.
          */
         mAvailable = new SimpleSemaphore(mMaxPalantiri, true);
+        
+        //mAvailable.w
     }
 
     /**
