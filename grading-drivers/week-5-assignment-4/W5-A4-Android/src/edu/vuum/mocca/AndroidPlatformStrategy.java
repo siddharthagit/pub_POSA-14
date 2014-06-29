@@ -47,6 +47,7 @@ public class AndroidPlatformStrategy extends PlatformStrategy
     {
         /** (Re)initialize the CountDownLatch. */
         // TODO - You fill in here.
+    	mLatch = new CountDownLatch(NUMBER_OF_THREADS);
     }
 
     /** Print the outputString to the display. */
@@ -57,24 +58,35 @@ public class AndroidPlatformStrategy extends PlatformStrategy
          * and appends the outputString to a TextView. 
          */
         // TODO - You fill in here.
+     	Runnable prt = new Runnable() {
+			
+			@Override
+			public void run() {
+				mTextViewOutput.setText(mTextViewOutput.getText() + outputString +"\n");				
+			}
+		};
+		
+		mActivity.get().runOnUiThread(prt);
+		
     }
 
     /** Indicate that a game thread has finished running. */
     public void done()
     {	
         // TODO - You fill in here.
+    	mLatch.countDown();
     }
 
     /** Barrier that waits for all the game threads to finish. */
     public void awaitDone()
     {
         // TODO - You fill in here.
-    }
-
-    /** Returns the platform name in a String. */
-    public String platformName() 
-    {
-        return System.getProperty("java.specification.vendor");
+    	try {
+			mLatch.await();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     /** 
@@ -85,4 +97,10 @@ public class AndroidPlatformStrategy extends PlatformStrategy
     {
        Log.e(javaFile, errorMessage);
     }
+
+	@Override
+	public String platformName() {
+		// TODO Auto-generated method stub
+		 return System.getProperty("java.specification.vendor");
+	}
 }
